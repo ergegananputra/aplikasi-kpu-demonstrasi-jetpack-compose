@@ -2,6 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    // Room
+    alias(libs.plugins.androidx.room)
+
+    // KSP
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -37,6 +43,9 @@ android {
     buildFeatures {
         compose = true
     }
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -56,4 +65,23 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // [Coil](https://github.com/coil-kt/coil)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    // Kotlin Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.testing)
+    implementation(libs.androidx.room.paging)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
