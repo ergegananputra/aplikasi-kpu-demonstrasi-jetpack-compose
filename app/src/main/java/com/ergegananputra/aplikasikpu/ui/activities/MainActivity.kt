@@ -1,4 +1,4 @@
-package com.ergegananputra.aplikasikpu
+package com.ergegananputra.aplikasikpu.ui.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
