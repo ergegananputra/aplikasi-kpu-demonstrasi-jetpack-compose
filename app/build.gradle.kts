@@ -66,6 +66,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // compose viewmodel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     // [Coil](https://github.com/coil-kt/coil)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

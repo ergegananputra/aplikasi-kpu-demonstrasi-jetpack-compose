@@ -1,10 +1,32 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.dashboard
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ergegananputra.aplikasikpu.R
+import com.ergegananputra.aplikasikpu.ui.navigations.MainActivityEvent
+import com.ergegananputra.aplikasikpu.ui.presentations.components.KpuButton
+import com.ergegananputra.aplikasikpu.ui.presentations.components.LogOutAlertDialog
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 
 @Preview(
@@ -14,18 +36,154 @@ import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 )
 @Composable
 private fun DashboardScreenDeveloperPreview() {
+    val viewModel = DashboardViewModel()
     AplikasiKPUTheme {
-        DashboardScreen()
+        DashboardScreen(viewModel)
     }
 }
 
 
 @Composable
-fun DashboardScreen(modifier: Modifier = Modifier) {
+fun DashboardScreen(
+    viewModel: DashboardViewModel,
+    modifier: Modifier = Modifier,
+    mainEvent: (MainActivityEvent) -> Unit = {},
+) {
+    val state by viewModel.state.collectAsState()
+
+    if (state.isDialogOpen) {
+        LogOutAlertDialog(
+            onDismissRequest = viewModel::onDismissDialog,
+            onConfirmation = {
+                mainEvent(MainActivityEvent.LogOut)
+            }
+        )
+    }
+
     Surface(
         modifier = modifier
             .fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 16.dp,
+                        vertical = 8.dp
+                    )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.5f)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.logo_kpu_sample),
+                            contentDescription = "Logo KPU",
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .padding(32.dp)
+                                .weight(1f)
+                        )
 
+                        Text(
+                            text = "KPU",
+                            style = MaterialTheme.typography.displayMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.5f)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    ) {
+                        KpuButton(
+                            text = "Informasi",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_baseline_library_books_24),
+                                contentDescription = "Tombol Informasi",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+
+                        KpuButton(
+                            text = "Form Entry",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_baseline_edit_document_24),
+                                contentDescription = "Tombol Form Entry",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+
+                        KpuButton(
+                            text = "Lihat Data",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_baseline_document_scanner_24),
+                                contentDescription = "Tombol Lihat Data",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+
+                        KpuButton(
+                            text = "Keluar",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = viewModel::onButtonLogoutClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_baseline_exit_to_app_24),
+                                contentDescription = "Tombol Keluar",
+                                tint = MaterialTheme.colorScheme.onError,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+                    }
+                }
+
+            }
+
+            Text(
+                text = "Versi ${state.appVersion}",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter)
+            )
+
+        }
     }
 }
+
+
