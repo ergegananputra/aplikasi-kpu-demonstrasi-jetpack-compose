@@ -113,7 +113,7 @@ fun DashboardScreen(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
                             .fillMaxWidth(),
                     ) {
@@ -126,7 +126,7 @@ fun DashboardScreen(
                                 painter = painterResource(R.drawable.ic_baseline_library_books_24),
                                 contentDescription = "Tombol Informasi",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier.padding(end = 16.dp)
                             )
                         }
 
@@ -139,7 +139,7 @@ fun DashboardScreen(
                                 painter = painterResource(R.drawable.ic_baseline_edit_document_24),
                                 contentDescription = "Tombol Form Entry",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier.padding(end = 16.dp)
                             )
                         }
 
@@ -152,7 +152,7 @@ fun DashboardScreen(
                                 painter = painterResource(R.drawable.ic_baseline_document_scanner_24),
                                 contentDescription = "Tombol Lihat Data",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier.padding(end = 16.dp)
                             )
                         }
 
@@ -166,7 +166,7 @@ fun DashboardScreen(
                                 painter = painterResource(R.drawable.ic_baseline_exit_to_app_24),
                                 contentDescription = "Tombol Keluar",
                                 tint = MaterialTheme.colorScheme.onError,
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier.padding(end = 16.dp)
                             )
                         }
                     }
