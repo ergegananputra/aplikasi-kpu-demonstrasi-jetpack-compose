@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -120,7 +118,10 @@ fun DashboardScreen(
                         KpuButton(
                             text = "Informasi",
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                mainEvent(MainActivityEvent.GoToInformasi)
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_library_books_24),
@@ -133,7 +134,10 @@ fun DashboardScreen(
                         KpuButton(
                             text = "Form Entry",
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                mainEvent(MainActivityEvent.GoToFormEntry)
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_edit_document_24),
@@ -146,7 +150,10 @@ fun DashboardScreen(
                         KpuButton(
                             text = "Lihat Data",
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                mainEvent(MainActivityEvent.GoToLihatData)
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_document_scanner_24),

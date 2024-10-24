@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Aplikasi KPU</string>
+    <string name="title_activity_form_entry">FormEntryActivity</string>
+    <string name="title_activity_informasi">InformasiActivity</string>
+    <string name="title_activity_data_pemilih">DataPemilihActivity</string>
+    <string name="title_activity_detail_data_pemilih">DetailDataPemilihActivity</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="pilih_lokasi">Pilih lokasi</string>
 </resources>

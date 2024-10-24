@@ -1,11 +1,11 @@
 package com.ergegananputra.aplikasikpu.ui.activities
 
-import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -52,14 +52,47 @@ class MainActivity : ComponentActivity() {
             }
 
             MainActivityEvent.GoToFormEntry -> {
-                // TODO
+                val intentToFormEntryActivity = Intent(this, FormEntryActivity::class.java)
+                launcherToFormEntry.launch(intentToFormEntryActivity)
             }
             MainActivityEvent.GoToInformasi -> {
-                // TODO
+                val intentToInformasiActivity = Intent(this, InformasiActivity::class.java)
+                launcherToInformasi.launch(intentToInformasiActivity)
             }
             MainActivityEvent.GoToLihatData -> {
-                // TODO
+                val intentToLihatDataActivity = Intent(this, DataPemilihActivity::class.java)
+                launcherToLihatData.launch(intentToLihatDataActivity)
             }
+        }
+    }
+
+    private val launcherToInformasi = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // TODO
+        } else {
+            // TODO
+        }
+    }
+
+    private val launcherToLihatData = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // TODO
+        } else {
+            // TODO
+        }
+    }
+
+    private val launcherToFormEntry = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // TODO
+        } else {
+            // TODO
         }
     }
 
