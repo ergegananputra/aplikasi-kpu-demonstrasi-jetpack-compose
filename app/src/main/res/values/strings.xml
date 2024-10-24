@@ -6,4 +6,5 @@
     <string name="title_activity_detail_data_pemilih">DetailDataPemilihActivity</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="pilih_lokasi">Pilih lokasi</string>
+    <string name="deskripsi_kpu">Komisi Pemilihan Umum Republik Indonesia (disingkat KPU RI) adalah badan yang menyelenggarakan pemilihan umum di Indonesia. Tanggung jawabnya termasuk memutuskan partai mana yang dapat mengikuti pemilu, mengatur pemungutan suara dan mengumumkan hasil dan kursi yang dimenangkan di berbagai cabang pemerintahan.</string>
 </resources>
