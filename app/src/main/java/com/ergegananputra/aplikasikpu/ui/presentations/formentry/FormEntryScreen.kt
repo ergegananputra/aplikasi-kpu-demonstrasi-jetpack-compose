@@ -1,5 +1,7 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.formentry
 
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,12 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -42,10 +47,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
 import com.ergegananputra.aplikasikpu.R
 import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.components.KpuButton
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
+import kotlinx.coroutines.delay
 
 @Preview(
     name = "Light Mode",
@@ -81,6 +88,20 @@ fun FormEntryScreen(
                 }
             }
         )
+    }
+
+    if (state.isDone) {
+        mainEvent(FormEntryActivityEvent.OnBack)
+    }
+
+    state.errorMessage?.let {
+        val toast = Toast.makeText(
+            LocalContext.current,
+            it,
+            Toast.LENGTH_SHORT
+        )
+        toast.show()
+        viewModel.clearErrorMessage()
     }
 
     Surface(
@@ -216,9 +237,34 @@ fun FormEntryScreen(
                 }
             }
 
-            Text(
-                text = "Alamat"
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Alamat",
+                    modifier = Modifier.weight(1f)
+                )
+
+                Button(
+                    onClick = {
+                        mainEvent(FormEntryActivityEvent.GoToMaps)
+                    },
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_my_location_24),
+                        contentDescription = "Icon Ambil Lokasi Sekarang",
+                        modifier = Modifier.padding(end=8.dp)
+                    )
+                    Text(
+                        text = "Cari",
+                    )
+                }
+            }
+
             // TextField Area
             OutlinedTextField(
                 value = state.alamat,
@@ -228,22 +274,40 @@ fun FormEntryScreen(
                     .fillMaxWidth()
             )
 
-            KpuButton(
-                text = "Ambil Lokasi Sekarang",
-                onClick = {
-                    mainEvent(FormEntryActivityEvent.GoToMaps)
+            Row(
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Button(
+                    onClick = { mainEvent(FormEntryActivityEvent.LaunchCamera) },
+                    modifier = Modifier.weight(1f).padding(end = 4.dp)
+                ) {
+                    Text("Ambil Photo")
                 }
-            )
 
-            Text(
-                text = "Gambar"
-            )
+                Button(
+                    onClick = { mainEvent(FormEntryActivityEvent.UploadPhoto) },
+                    modifier = Modifier.weight(1f).padding(start = 4.dp)
+                ) {
+                    Text("Upload Image")
+                }
+            }
+
+            state.capturedPhoto?.let { uri ->
+
+                AsyncImage(
+                    model = uri,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(
+                            max= 200.dp
+                        )
+                )
+            }
 
             KpuButton(
                 text = "Simpan",
-                onClick = {
-                    // TODO
-                }
+                onClick = viewModel::saveForm
             )
 
 

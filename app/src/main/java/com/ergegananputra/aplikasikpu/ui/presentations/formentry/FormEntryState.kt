@@ -1,5 +1,6 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.formentry
 
+import android.net.Uri
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -11,10 +12,13 @@ data class FormEntryState(
     val gender : Int = 0,
     val tanggalPendataan: Long = System.currentTimeMillis(),
     val alamat: String = "",
-    val imageFilename : String = "",
+
+    val capturedPhoto : Uri? = null,
 
     // Fungsionalitas
     val isModalDatePickerShow : Boolean = false,
+    val isDone : Boolean = false,
+    val errorMessage : String? = null
 ) {
     val tanggalPendataanReadable : String
         get() = if (tanggalPendataan == 0L) {

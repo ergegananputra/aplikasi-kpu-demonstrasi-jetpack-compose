@@ -1,13 +1,29 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.formentry
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class FormEntryViewModel : ViewModel() {
     private val _state = MutableStateFlow(FormEntryState())
-    val state = _state.asStateFlow()
+    private val _capturedPhoto = MutableStateFlow<Uri?>(null)
+
+    val state = combine(_state, _capturedPhoto) { state, capturedPhoto ->
+        state.copy(capturedPhoto = capturedPhoto)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(2000L), FormEntryState())
+
+
+
+    fun updateCapturedPhoto(uri: Uri) {
+        _capturedPhoto.value = uri
+    }
 
     fun afterNikChanged(nik: String) {
         _state.update {
@@ -45,11 +61,6 @@ class FormEntryViewModel : ViewModel() {
         }
     }
 
-    fun afterImageFilenameChanged(imageFilename: String) {
-        _state.update {
-            it.copy(imageFilename = imageFilename)
-        }
-    }
 
     fun showDatePicker() {
         _state.update {
@@ -62,6 +73,32 @@ class FormEntryViewModel : ViewModel() {
             it.copy(isModalDatePickerShow = false)
         }
     }
+
+    fun updateAddress(address: String?) {
+        _state.update {
+            it.copy(alamat = address ?: "")
+        }
+    }
+
+    fun saveForm() {
+        displayErrorMessage("Belum diimplementasikan")
+        _state.update {
+            it.copy(isDone = true)
+        }
+    }
+
+    private fun displayErrorMessage(message: String) {
+        _state.update {
+            it.copy(errorMessage = message)
+        }
+    }
+
+    fun clearErrorMessage() {
+        _state.update {
+            it.copy(errorMessage = null)
+        }
+    }
+
 
 
 }

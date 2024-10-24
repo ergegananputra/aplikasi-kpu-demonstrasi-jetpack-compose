@@ -1,8 +1,12 @@
 package com.ergegananputra.aplikasikpu.ui.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,15 +28,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
+import java.io.File
 
 class FormEntryActivity : ComponentActivity() {
 
     private lateinit var formEntryViewModel: FormEntryViewModel
+    private lateinit var photoUri: Uri
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,14 +97,65 @@ class FormEntryActivity : ComponentActivity() {
                 val intentToMaps = Intent(this, MapsActivity::class.java)
                 launcherToMaps.launch(intentToMaps)
             }
+
+            is FormEntryActivityEvent.LaunchCamera -> {
+                checkCameraHardware(this@FormEntryActivity).let {
+                    if (it) {
+                        launchCamera()
+                    }
+                }
+            }
+
+            is FormEntryActivityEvent.UploadPhoto -> {
+                launchImagePicker()
+            }
+
+            else -> {}
         }
+    }
+
+    private fun launchImagePicker() {
+        launcherPickImage.launch("image/*")
+    }
+
+    private fun launchCamera() {
+        val file = File(this@FormEntryActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
+        val uri = FileProvider.getUriForFile(this@FormEntryActivity, "com.ergegananputra.aplikasikpu.provider", file)
+
+        photoUri = uri
+        launcherTakePicture.launch(photoUri)
     }
 
     private val launcherToMaps = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            Log.d("FormEntryActivity", "Success")
+            val address = result.data?.getStringExtra(FormEntryActivityEvent.ADDRESS)
+            formEntryViewModel.updateAddress(address)
+        }
+    }
+
+    private val launcherTakePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            // Handle the captured photo
+            formEntryViewModel.updateCapturedPhoto(photoUri)
+        }
+    }
+
+    private val launcherPickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            formEntryViewModel.updateCapturedPhoto(it)
+        }
+    }
+
+
+    private fun checkCameraHardware(context: Context): Boolean {
+        if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true
+        } else {
+            // no camera on this device
+            return false
         }
     }
 }
