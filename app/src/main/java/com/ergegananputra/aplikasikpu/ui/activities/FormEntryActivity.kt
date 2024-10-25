@@ -12,11 +12,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ergegananputra.aplikasikpu.KPUApplication
 import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryViewModel
@@ -39,7 +40,6 @@ import java.io.File
 class FormEntryActivity : ComponentActivity() {
 
     private lateinit var formEntryViewModel: FormEntryViewModel
-    private lateinit var photoUri: Uri
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +47,9 @@ class FormEntryActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-            formEntryViewModel = viewModel(FormEntryViewModel::class.java)
+            formEntryViewModel = viewModel {
+                FormEntryViewModel(appContainer = (application as KPUApplication).appContainer)
+            }
             AplikasiKPUTheme {
                 Scaffold(
                     topBar = {
@@ -122,7 +124,8 @@ class FormEntryActivity : ComponentActivity() {
         val file = File(this@FormEntryActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
         val uri = FileProvider.getUriForFile(this@FormEntryActivity, "com.ergegananputra.aplikasikpu.provider", file)
 
-        photoUri = uri
+        formEntryViewModel.updateCapturedPhoto(uri)
+        val photoUri = formEntryViewModel.state.value.capturedPhoto ?: return
         launcherTakePicture.launch(photoUri)
     }
 
@@ -138,6 +141,7 @@ class FormEntryActivity : ComponentActivity() {
     private val launcherTakePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             // Handle the captured photo
+            val photoUri = formEntryViewModel.state.value.capturedPhoto ?: return@registerForActivityResult
             formEntryViewModel.updateCapturedPhoto(photoUri)
         }
     }
