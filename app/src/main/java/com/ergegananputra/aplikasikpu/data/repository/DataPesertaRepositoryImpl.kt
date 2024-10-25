@@ -3,15 +3,26 @@ package com.ergegananputra.aplikasikpu.data.repository
 import android.util.Log
 import com.ergegananputra.aplikasikpu.data.database.AppDatabase
 import com.ergegananputra.aplikasikpu.data.remote.BackendApi
+import com.ergegananputra.aplikasikpu.domain.entities.remote.responses.GetPesertaResponse
 import com.ergegananputra.aplikasikpu.domain.entities.room.DataPeserta
 import com.ergegananputra.aplikasikpu.domain.repository.DataPesertaRepository
 import com.ergegananputra.aplikasikpu.utils.Result
+import com.ergegananputra.aplikasikpu.utils.toTimestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.time.Instant
 import java.util.Date
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class DataPesertaRepositoryImpl(
     database: AppDatabase,
@@ -29,13 +40,8 @@ class DataPesertaRepositoryImpl(
         return Result.Success(Unit)
     }
 
-    override suspend fun getDataPeserta() : Result {
-        try {
-            val dataPeserta = db.getAllDataPesertaOrderedByTimestampDesc()
-            return Result.Success(dataPeserta)
-        } catch (e: Exception) {
-            return Result.Error(e)
-        }
+    override fun getDataPeserta() : Flow<List<DataPeserta>> {
+        return db.getAllDataPesertaOrderedByTimestampDesc()
     }
 
     override suspend fun uploadDataPeserta(
@@ -75,34 +81,61 @@ class DataPesertaRepositoryImpl(
     }
 
     override suspend fun downloadDataPeserta() : Result {
-        val result = api.getPeserta().execute()
+        return suspendCoroutine { continuation ->
+            api.getPeserta().enqueue( object : Callback<GetPesertaResponse> {
+                override fun onResponse(
+                    call: Call<GetPesertaResponse>,
+                    response: Response<GetPesertaResponse>,
+                ) {
 
-        if (result.isSuccessful.not()) {
-            return Result.Error(Exception("Download data peserta failed"), "Gagal mengunduh data peserta")
+                    if (response.isSuccessful.not()) {
+                        Log.e("DataPesertaRepositoryImpl", "onResponse - Error: ${response.errorBody()}")
+                        val result = Result.Error(Exception("Download data peserta failed"), "Gagal mengunduh data peserta")
+                        continuation.resume(result)
+                        return
+                    }
+
+                    val dataPeserta = response.body()?.data ?: emptyList()
+
+                    try {
+                        CoroutineScope(continuation.context).launch {
+                            deleteAllDataPeserta()
+
+                            dataPeserta.forEach {
+                                db.upsert(
+                                    DataPeserta(
+                                        id = it.id,
+                                        nik = it.nik,
+                                        namaLengkap = it.namaLengkap,
+                                        nomorHandphone = it.nomorHandphone,
+                                        gender = it.gender,
+                                        tanggalPendataan = it.tanggalPendataan.toTimestamp(),
+                                        alamat = it.alamat,
+                                        imageUrl = it.imageUrl
+                                    )
+                                )
+                            }
+                        }
+                        val result = Result.Success(Unit)
+                        continuation.resume(result)
+                    } catch (e: Exception) {
+                        Log.e("DataPesertaRepositoryImpl", "(DownloadDataPeserta) Error: $e")
+                        val result = Result.Error(e)
+                        continuation.resume(result)
+                    }
+                }
+
+                override fun onFailure(call: Call<GetPesertaResponse>, e: Throwable) {
+                    Log.e("DataPesertaRepositoryImpl", "onFailure - Error: $e")
+                    val result = Result.Error(Exception("Download data peserta failed"), e.message ?: "Gagal mengunduh data peserta")
+                    continuation.resume(result)
+                }
+            })
         }
+    }
 
-        val dataPeserta = result.body()?.data ?: return Result.Error(Exception("Download data peserta failed"), "Gagal mengunduh data peserta")
-
-        try {
-            dataPeserta.forEach {
-                db.upsert(
-                    DataPeserta(
-                        id = it.id,
-                        nik = it.nik,
-                        namaLengkap = it.namaLengkap,
-                        nomorHandphone = it.nomorHandphone,
-                        gender = it.gender,
-                        tanggalPendataan = it.tanggalPendataan,
-                        alamat = it.alamat,
-                        imageUrl = it.imageUrl
-                    )
-                )
-            }
-        } catch (e: Exception) {
-            return Result.Error(e)
-        }
-
-        return Result.Success(Unit)
+    private suspend fun deleteAllDataPeserta() {
+        db.deleteAll()
     }
 
     private fun String?.toRequestBody(): RequestBody {

@@ -17,4 +17,7 @@ interface DataPesertaDao {
 
     @Query("SELECT * FROM data_peserta ORDER BY tanggalPendataan DESC")
     fun getAllDataPesertaOrderedByTimestampDesc(): Flow<List<DataPeserta>>
+
+    @Query("DELETE FROM data_peserta")
+    suspend fun deleteAll()
 }

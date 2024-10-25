@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -108,8 +109,10 @@ class FormEntryViewModel(
     }
 
     private fun fetchData(onSuccess: () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = appContainer.dataPesertaRepository.downloadDataPeserta()
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                appContainer.dataPesertaRepository.downloadDataPeserta()
+            }
             when (result) {
                 is com.ergegananputra.aplikasikpu.utils.Result.Error -> {
                     displayErrorMessage(result.message ?: "Gagal mengunduh data peserta")

@@ -1,4 +1,4 @@
-package com.ergegananputra.aplikasikpu.domain.entities.remote.responses
+package com.ergegananputra.aplikasikpu.domain.entities.remote.data
 
 import com.ergegananputra.aplikasikpu.domain.entities.base.DataPesertaInterface
 import com.ergegananputra.aplikasikpu.utils.toTimestamp
@@ -20,9 +20,7 @@ data class PesertaResponse(
     override var gender: Int = 0,
 
     @SerializedName("tanggalPendataan")
-    var tanggalPendataanString : String = "",
-
-    override var tanggalPendataan: Long = tanggalPendataanString.toTimestamp(),
+    override var tanggalPendataan : String = "",
 
     @SerializedName("alamat")
     override var alamat: String? = null,
@@ -35,6 +33,6 @@ data class PesertaResponse(
 
     @SerializedName("updated_at")
     val updated_at: String = ""
-) : DataPesertaInterface<Int>
+) : DataPesertaInterface<Int, String> {}
 
 

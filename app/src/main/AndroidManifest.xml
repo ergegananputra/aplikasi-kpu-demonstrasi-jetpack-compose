@@ -33,11 +33,6 @@
             android:label="@string/title_activity_maps"
             android:theme="@style/Theme.AplikasiKPU" />
         <activity
-            android:name=".ui.activities.DetailDataPemilihActivity"
-            android:exported="false"
-            android:label="@string/title_activity_detail_data_pemilih"
-            android:theme="@style/Theme.AplikasiKPU" />
-        <activity
             android:name=".ui.activities.DataPemilihActivity"
             android:exported="false"
             android:label="@string/title_activity_data_pemilih"

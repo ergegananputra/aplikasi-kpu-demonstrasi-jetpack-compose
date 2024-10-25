@@ -15,4 +15,4 @@ data class DataPeserta(
     override var tanggalPendataan: Long,
     override var alamat: String?,
     override val imageUrl: String?
-) : DataPesertaInterface<Int>
+) : DataPesertaInterface<Int, Long>
