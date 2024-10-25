@@ -1,6 +1,8 @@
 package com.ergegananputra.aplikasikpu.ui.activities
 
+import android.Manifest
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,7 +14,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.content.FileProvider
@@ -35,17 +37,28 @@ import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.io.File
 
 class FormEntryActivity : ComponentActivity() {
 
     private lateinit var formEntryViewModel: FormEntryViewModel
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val cameraPermission = rememberMultiplePermissionsState(
+                permissions = listOf(
+                    Manifest.permission.CAMERA,
+                )
+            )
+            LaunchedEffect(Unit) {
+                cameraPermission.launchMultiplePermissionRequest()
+            }
+
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             formEntryViewModel = viewModel {
                 FormEntryViewModel(appContainer = (application as KPUApplication).appContainer)
@@ -101,11 +114,11 @@ class FormEntryActivity : ComponentActivity() {
             }
 
             is FormEntryActivityEvent.LaunchCamera -> {
-                checkCameraHardware(this@FormEntryActivity).let {
-                    if (it) {
-                        launchCamera()
-                    }
+                val available = checkCameraHardware(this@FormEntryActivity)
+                if (available) {
+                    launchCamera()
                 }
+
             }
 
             is FormEntryActivityEvent.UploadPhoto -> {
@@ -120,13 +133,30 @@ class FormEntryActivity : ComponentActivity() {
         launcherPickImage.launch("image/*")
     }
 
-    private fun launchCamera() {
-        val file = File(this@FormEntryActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
-        val uri = FileProvider.getUriForFile(this@FormEntryActivity, "com.ergegananputra.aplikasikpu.provider", file)
+    private var tempPhotoUri : Uri? = null
 
-        formEntryViewModel.updateCapturedPhoto(uri)
-        val photoUri = formEntryViewModel.state.value.capturedPhoto ?: return
-        launcherTakePicture.launch(photoUri)
+    private fun launchCamera() {
+        try {
+//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            val photoFile = File.createTempFile(
+                "JPEG_${System.currentTimeMillis()}_",
+                ".jpg",
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            )
+            val photoUri = FileProvider.getUriForFile(
+                this,
+                "com.ergegananputra.aplikasikpu.provider",
+                photoFile
+            )
+
+            launcherTakePicture.launch(photoUri)
+            tempPhotoUri = photoUri
+
+        } catch (e: ActivityNotFoundException) {
+            // display error state to the user
+            Log.e("FormEntryActivity", "Error: ${e.message}")
+            formEntryViewModel.displayErrorMessage("Kamera tidak ditemukan")
+        }
     }
 
     private val launcherToMaps = registerForActivityResult(
@@ -138,12 +168,17 @@ class FormEntryActivity : ComponentActivity() {
         }
     }
 
-    private val launcherTakePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+    private val launcherTakePicture = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
         if (success) {
             // Handle the captured photo
-            val photoUri = formEntryViewModel.state.value.capturedPhoto ?: return@registerForActivityResult
-            formEntryViewModel.updateCapturedPhoto(photoUri)
+            tempPhotoUri?.let {
+                formEntryViewModel.updateCapturedPhoto(it)
+            }
+
         }
+        tempPhotoUri = null
     }
 
     private val launcherPickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -154,12 +189,6 @@ class FormEntryActivity : ComponentActivity() {
 
 
     private fun checkCameraHardware(context: Context): Boolean {
-        if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true
-        } else {
-            // no camera on this device
-            return false
-        }
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 }

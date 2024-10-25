@@ -21,5 +21,6 @@ sealed class FormEntryActivityEvent {
 
     companion object {
         const val ADDRESS = "address_key_intent"
+        const val REQUEST_IMAGE_CAPTURE = 1
     }
 }

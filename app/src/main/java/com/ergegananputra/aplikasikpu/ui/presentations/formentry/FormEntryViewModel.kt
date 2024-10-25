@@ -124,7 +124,7 @@ class FormEntryViewModel(
         }
     }
 
-    private fun displayErrorMessage(message: String) {
+    fun displayErrorMessage(message: String) {
         _state.update {
             it.copy(errorMessage = message)
         }
