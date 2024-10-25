@@ -1,9 +1,11 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.dashboard
 
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -117,7 +119,7 @@ fun DashboardScreen(
                     ) {
                         KpuButton(
                             text = "Informasi",
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 mainEvent(MainActivityEvent.GoToInformasi)
@@ -133,7 +135,7 @@ fun DashboardScreen(
 
                         KpuButton(
                             text = "Form Entry",
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 mainEvent(MainActivityEvent.GoToFormEntry)
@@ -149,7 +151,7 @@ fun DashboardScreen(
 
                         KpuButton(
                             text = "Lihat Data",
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 mainEvent(MainActivityEvent.GoToLihatData)
@@ -163,19 +165,38 @@ fun DashboardScreen(
                             )
                         }
 
-                        KpuButton(
-                            text = "Keluar",
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = viewModel::onButtonLogoutClick
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_baseline_exit_to_app_24),
-                                contentDescription = "Tombol Keluar",
-                                tint = MaterialTheme.colorScheme.onError,
-                                modifier = Modifier.padding(end = 16.dp)
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(0.3f)
+                            )
+
+                            KpuButton(
+                                text = "Keluar",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = viewModel::onButtonLogoutClick
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_baseline_exit_to_app_24),
+                                    contentDescription = "Tombol Keluar",
+                                    tint = MaterialTheme.colorScheme.onError,
+                                    modifier = Modifier.padding(end = 16.dp)
+                                )
+                            }
+
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(0.7f)
                             )
                         }
+
+
                     }
                 }
 

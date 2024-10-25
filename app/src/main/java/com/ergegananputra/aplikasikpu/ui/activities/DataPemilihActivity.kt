@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ergegananputra.aplikasikpu.KPUApplication
@@ -72,7 +73,9 @@ class DataPemilihActivity : ComponentActivity() {
                             scrollBehavior = scrollBehavior
                         )
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                 ) { innerPadding ->
                     DataPemilihScreen(
                         viewModel = dataPesertaViewModel,

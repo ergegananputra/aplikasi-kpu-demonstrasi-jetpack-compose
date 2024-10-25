@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,7 +20,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ import com.ergegananputra.aplikasikpu.R
 import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.formentry.FormEntryViewModel
+import com.ergegananputra.aplikasikpu.ui.presentations.informasi.InformasiScreen
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 
 class InformasiActivity : ComponentActivity() {
@@ -68,24 +72,11 @@ class InformasiActivity : ComponentActivity() {
                             scrollBehavior = scrollBehavior
                         )
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                 ) { innerPadding ->
-                    Surface(
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Text(
-                                text = stringResource(R.string.deskripsi_kpu),
-                                modifier = Modifier
-                                    .padding(
-                                        horizontal = 16.dp,
-                                        vertical = 8.dp
-                                    )
-                            )
-                        }
-                    }
+                    InformasiScreen(innerPadding)
                 }
             }
         }

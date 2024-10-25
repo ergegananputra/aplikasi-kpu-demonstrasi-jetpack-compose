@@ -17,6 +17,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -248,6 +249,10 @@ fun FormEntryScreen(
                 )
 
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary
+                    ),
                     onClick = {
                         mainEvent(FormEntryActivityEvent.GoToMaps)
                     },
@@ -257,6 +262,7 @@ fun FormEntryScreen(
                     Icon(
                         painter = painterResource(R.drawable.ic_my_location_24),
                         contentDescription = "Icon Ambil Lokasi Sekarang",
+                        tint = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.padding(end=8.dp)
                     )
                     Text(
@@ -278,16 +284,38 @@ fun FormEntryScreen(
                 modifier = Modifier.padding(top = 8.dp)
             ) {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
                     onClick = { mainEvent(FormEntryActivityEvent.LaunchCamera) },
                     modifier = Modifier.weight(1f).padding(end = 4.dp)
                 ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_baseline_add_a_photo_24),
+                        contentDescription = "Icon Ambil Photo",
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+
                     Text("Ambil Photo")
                 }
 
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
                     onClick = { mainEvent(FormEntryActivityEvent.UploadPhoto) },
                     modifier = Modifier.weight(1f).padding(start = 4.dp)
                 ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_baseline_insert_photo_24),
+                        contentDescription = "Icon Tarik Photo",
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+
                     Text("Upload Image")
                 }
             }
@@ -307,8 +335,20 @@ fun FormEntryScreen(
 
             KpuButton(
                 text = "Simpan",
-                onClick = viewModel::saveForm
-            )
+                onClick = viewModel::saveForm,
+                modifier = Modifier
+                    .padding(
+                        top = 56.dp,
+                        bottom = 32.dp
+                    )
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_baseline_save_24),
+                    contentDescription = "Icon Simpan",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+            }
 
 
         }
