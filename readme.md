@@ -1,6 +1,6 @@
 ## Tugas Praktik Demonstrasi
 
-Adiel Boanerge Gananputra
+Adiel Boanerge Gananputra <br/>
 Teknologi Rekayasa Perangkat Lunak - Universitas Gadjah Mada
 
 ### Deskripsi
