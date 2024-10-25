@@ -17,6 +17,7 @@ data class FormEntryState(
 
     // Fungsionalitas
     val isModalDatePickerShow : Boolean = false,
+    val isLoading : Boolean = false,
     val isDone : Boolean = false,
     val errorMessage : String? = null
 ) {

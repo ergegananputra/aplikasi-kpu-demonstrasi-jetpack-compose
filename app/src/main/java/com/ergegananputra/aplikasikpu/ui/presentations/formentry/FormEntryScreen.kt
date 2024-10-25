@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +45,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -125,6 +130,7 @@ fun FormEntryScreen(
                 iconResId = R.drawable.ic_outline_badge_24,
                 value = state.nik,
                 onValueChange = viewModel::afterNikChanged,
+                keyboardType = KeyboardType.Number,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -141,6 +147,7 @@ fun FormEntryScreen(
                 iconResId = R.drawable.ic_baseline_phone_24,
                 value = state.nomorHandphone,
                 onValueChange = viewModel::afterNomorHandphoneChanged,
+                keyboardType = KeyboardType.Phone,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -198,6 +205,10 @@ fun FormEntryScreen(
 
             }
 
+
+            Text(
+                text = "Tanggal Pendataan",
+            )
 
             Box(
                 modifier = Modifier
@@ -276,8 +287,15 @@ fun FormEntryScreen(
                 value = state.alamat,
                 onValueChange = viewModel::afterAlamatChanged,
                 minLines = 3,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
+            )
+
+            Text(
+                text = "Bukti",
             )
 
             Row(
@@ -336,6 +354,7 @@ fun FormEntryScreen(
             KpuButton(
                 text = "Simpan",
                 onClick = viewModel::saveForm,
+                enabled = !state.isLoading,
                 modifier = Modifier
                     .padding(
                         top = 56.dp,
@@ -361,6 +380,7 @@ fun KPUOutlineTextField(
     value: String,
     iconResId: Int,
     modifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text,
     onValueChange : (String) -> Unit
 ) {
     OutlinedTextField(
@@ -388,6 +408,10 @@ fun KPUOutlineTextField(
         maxLines = 1,
         singleLine = true,
         onValueChange = onValueChange,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = keyboardType
+        ),
         modifier = modifier.minimumInteractiveComponentSize()
     )
 }

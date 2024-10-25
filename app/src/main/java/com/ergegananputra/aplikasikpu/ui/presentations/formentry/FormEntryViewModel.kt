@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -37,8 +38,18 @@ class FormEntryViewModel(
     }
 
     fun afterNikChanged(nik: String) {
+        if (nik.length > 16) {
+            return
+        }
+
         _state.update {
-            it.copy(nik = nik)
+            it.copy(
+                nik = nik
+                    .replace(" ", "")
+                    .replace("-", "")
+                    .replace(".", "")
+                    .replace(",", "")
+            )
         }
     }
 
@@ -92,6 +103,10 @@ class FormEntryViewModel(
     }
 
     fun saveForm() {
+        _state.update {
+            it.copy(isLoading = true)
+        }
+
         validation {
             viewModelScope.launch(Dispatchers.IO) {
                 postPeserta {
@@ -106,6 +121,9 @@ class FormEntryViewModel(
             }
         }
 
+        _state.update {
+            it.copy(isLoading = false)
+        }
     }
 
     private fun fetchData(onSuccess: () -> Unit) {
@@ -146,13 +164,25 @@ class FormEntryViewModel(
             state = state.copy(capturedPhoto = uriImage)
         }
 
-        state.capturedPhoto.validated("Foto tidak boleh kosong") ?: return
-        state.nik.validated("NIK tidak boleh kosong") ?: return
-        state.namaLengkap.validated("Nama lengkap tidak boleh kosong") ?: return
-        state.nomorHandphone.validated("Nomor handphone tidak boleh kosong") ?: return
-        state.gender.validated("Jenis kelamin tidak boleh kosong") ?: return
-        state.tanggalPendataan.validated("Tanggal pendataan tidak boleh kosong") ?: return
-        state.alamat.validated("Alamat tidak boleh kosong") ?: return
+        val capturedPhoto = state.capturedPhoto.validated("Foto tidak boleh kosong") ?: return
+        val nik = state.nik.validated("NIK tidak boleh kosong") ?: return
+        val namaLengkap = state.namaLengkap.validated("Nama lengkap tidak boleh kosong") ?: return
+        val nomorHandphone = state.nomorHandphone.validated("Nomor handphone tidak boleh kosong") ?: return
+        val gender = state.gender.validated("Jenis kelamin tidak boleh kosong") ?: return
+        val tanggalPendataan = state.tanggalPendataan.validated("Tanggal pendataan tidak boleh kosong") ?: return
+        val alamat = state.alamat.validated("Alamat tidak boleh kosong") ?: return
+
+        _state.update {
+            it.copy(
+                nik = nik,
+                namaLengkap = namaLengkap,
+                nomorHandphone = nomorHandphone,
+                gender = gender,
+                tanggalPendataan = tanggalPendataan,
+                alamat = alamat,
+                capturedPhoto = capturedPhoto
+            )
+        }
 
         onSuccess()
     }
@@ -175,7 +205,7 @@ class FormEntryViewModel(
     }
 
     private fun Long.validated(errMsg: String): Long? {
-        if (this == 0L) {
+        if (this <= 0L) {
             displayErrorMessage(errMsg)
             return null
         } else {
@@ -184,7 +214,7 @@ class FormEntryViewModel(
     }
 
     private fun String.validated(errMsg: String): String? {
-        return this.ifEmpty {
+        return this.trim().ifEmpty {
             displayErrorMessage(errMsg)
             null
         }

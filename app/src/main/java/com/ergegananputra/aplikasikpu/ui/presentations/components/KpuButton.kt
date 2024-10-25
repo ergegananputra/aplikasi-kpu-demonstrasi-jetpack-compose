@@ -43,6 +43,7 @@ fun KpuButton(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primary,
+    enabled : Boolean = true,
     onClick : () -> Unit = {},
     lead: @Composable RowScope.() -> Unit = {},
 ) {
@@ -52,8 +53,8 @@ fun KpuButton(
             .minimumInteractiveComponentSize()
             .heightIn(max= 56.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick() },
-        color = color
+            .clickable { if (enabled) onClick() },
+        color = if (enabled) color else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
