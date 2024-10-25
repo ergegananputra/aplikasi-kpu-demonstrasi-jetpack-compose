@@ -18,6 +18,9 @@ interface DataPesertaDao {
     @Query("SELECT * FROM data_peserta ORDER BY tanggalPendataan DESC")
     fun getAllDataPesertaOrderedByTimestampDesc(): Flow<List<DataPeserta>>
 
+    @Query("SELECT * FROM data_peserta WHERE nik LIKE '%' || :keyword || '%' OR namaLengkap LIKE '%' || :keyword || '%'")
+    fun getDataPesertaFiltered(keyword: String): Flow<List<DataPeserta>>
+
     @Query("DELETE FROM data_peserta")
     suspend fun deleteAll()
 }

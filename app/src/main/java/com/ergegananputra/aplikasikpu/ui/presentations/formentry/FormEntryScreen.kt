@@ -56,6 +56,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.ergegananputra.aplikasikpu.R
 import com.ergegananputra.aplikasikpu.ui.navigations.FormEntryActivityEvent
+import com.ergegananputra.aplikasikpu.ui.presentations.components.DatePickerModal
+import com.ergegananputra.aplikasikpu.ui.presentations.components.KPUOutlineTextField
 import com.ergegananputra.aplikasikpu.ui.presentations.components.KpuButton
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 import kotlinx.coroutines.delay
@@ -371,75 +373,5 @@ fun FormEntryScreen(
 
 
         }
-    }
-}
-
-@Composable
-fun KPUOutlineTextField(
-    label : String,
-    value: String,
-    iconResId: Int,
-    modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    onValueChange : (String) -> Unit
-) {
-    OutlinedTextField(
-        label = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = iconResId),
-                    contentDescription = "Icon $label",
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(24.dp)
-                )
-                Text(
-                    text = label,
-                    maxLines = 1,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp
-                )
-
-            }
-        },
-        value = value,
-        maxLines = 1,
-        singleLine = true,
-        onValueChange = onValueChange,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next,
-            keyboardType = keyboardType
-        ),
-        modifier = modifier.minimumInteractiveComponentSize()
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("Simpan")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Batal")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
     }
 }

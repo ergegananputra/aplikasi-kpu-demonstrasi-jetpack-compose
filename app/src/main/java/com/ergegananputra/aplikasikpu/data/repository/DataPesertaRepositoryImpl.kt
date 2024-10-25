@@ -44,6 +44,10 @@ class DataPesertaRepositoryImpl(
         return db.getAllDataPesertaOrderedByTimestampDesc()
     }
 
+    override fun getDataPesertaFiltered(keyword: String) : Flow<List<DataPeserta>> {
+        return db.getDataPesertaFiltered(keyword)
+    }
+
     override suspend fun uploadDataPeserta(
         dataPeserta: DataPeserta,
         imageFile: File

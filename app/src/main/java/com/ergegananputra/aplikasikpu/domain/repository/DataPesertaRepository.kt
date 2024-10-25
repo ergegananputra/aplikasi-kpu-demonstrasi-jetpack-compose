@@ -9,6 +9,7 @@ import java.io.File
 interface DataPesertaRepository {
     suspend fun storeDataPeserta(dataPeserta: DataPeserta) : Result
     fun getDataPeserta() : Flow<List<DataPeserta>>
+    fun getDataPesertaFiltered(keyword: String) : Flow<List<DataPeserta>>
 
     suspend fun uploadDataPeserta(dataPeserta: DataPeserta, imageFile: File) : Result
     suspend fun downloadDataPeserta() : Result
