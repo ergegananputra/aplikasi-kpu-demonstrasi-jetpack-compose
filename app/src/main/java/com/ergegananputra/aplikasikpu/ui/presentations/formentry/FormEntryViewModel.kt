@@ -46,20 +46,27 @@ class FormEntryViewModel(
                     .replace(" ", "")
                     .replace("-", "")
                     .replace(".", "")
-                    .replace(",", "")
+                    .replace(",", ""),
+                nikErrMsg = null
             )
         }
     }
 
     fun afterNamaLengkapChanged(namaLengkap: String) {
         _state.update {
-            it.copy(namaLengkap = namaLengkap)
+            it.copy(
+                namaLengkap = namaLengkap,
+                namaLengkapErrMsg = null
+            )
         }
     }
 
     fun afterNomorHandphoneChanged(nomorHandphone: String) {
         _state.update {
-            it.copy(nomorHandphone = nomorHandphone)
+            it.copy(
+                nomorHandphone = nomorHandphone,
+                nomorHandphoneErrMsg = null
+            )
         }
     }
 
@@ -71,13 +78,18 @@ class FormEntryViewModel(
 
     fun changeTanggalPendataanChanged(tanggalPendataan: Long) {
         _state.update {
-            it.copy(tanggalPendataan = tanggalPendataan)
+            it.copy(
+                tanggalPendataan = tanggalPendataan,
+            )
         }
     }
 
     fun afterAlamatChanged(alamat: String) {
         _state.update {
-            it.copy(alamat = alamat)
+            it.copy(
+                alamat = alamat,
+                alamatErrMsg = null
+            )
         }
     }
 
@@ -163,12 +175,12 @@ class FormEntryViewModel(
         }
 
         val capturedPhoto = state.capturedPhoto.validated("Foto tidak boleh kosong") ?: return
-        val nik = state.nik.validated("NIK tidak boleh kosong") ?: return
-        val namaLengkap = state.namaLengkap.validated("Nama lengkap tidak boleh kosong") ?: return
-        val nomorHandphone = state.nomorHandphone.validated("Nomor handphone tidak boleh kosong") ?: return
+        val nik = state.nik.validated("NIK tidak boleh kosong", StringTypeState.NIK) ?: return
+        val namaLengkap = state.namaLengkap.validated("Nama lengkap tidak boleh kosong", StringTypeState.NAMA_LENGKAP) ?: return
+        val nomorHandphone = state.nomorHandphone.validated("Nomor handphone tidak boleh kosong", StringTypeState.NOMOR_HANDPHONE) ?: return
         val gender = state.gender.validated("Jenis kelamin tidak boleh kosong") ?: return
         val tanggalPendataan = state.tanggalPendataan.validated("Tanggal pendataan tidak boleh kosong") ?: return
-        val alamat = state.alamat.validated("Alamat tidak boleh kosong") ?: return
+        val alamat = state.alamat.validated("Alamat tidak boleh kosong", StringTypeState.ALAMAT) ?: return
 
         _state.update {
             it.copy(
@@ -183,6 +195,13 @@ class FormEntryViewModel(
         }
 
         onSuccess()
+    }
+
+    private enum class StringTypeState {
+        NIK,
+        NAMA_LENGKAP,
+        NOMOR_HANDPHONE,
+        ALAMAT,
     }
 
     private fun Uri?.validated(errMsg: String): Uri? {
@@ -211,8 +230,30 @@ class FormEntryViewModel(
         }
     }
 
-    private fun String.validated(errMsg: String): String? {
+    private fun String.validated(errMsg: String, type : StringTypeState): String? {
         return this.trim().ifEmpty {
+            when(type) {
+                StringTypeState.NIK -> {
+                    _state.update {
+                        it.copy(nikErrMsg = errMsg)
+                    }
+                }
+                StringTypeState.NAMA_LENGKAP -> {
+                    _state.update {
+                        it.copy(namaLengkapErrMsg = errMsg)
+                    }
+                }
+                StringTypeState.NOMOR_HANDPHONE -> {
+                    _state.update {
+                        it.copy(nomorHandphoneErrMsg = errMsg)
+                    }
+                }
+                StringTypeState.ALAMAT -> {
+                    _state.update {
+                        it.copy(alamatErrMsg = errMsg)
+                    }
+                }
+            }
             displayErrorMessage(errMsg)
             null
         }

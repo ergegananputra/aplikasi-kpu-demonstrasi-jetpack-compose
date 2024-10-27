@@ -7,11 +7,20 @@ import java.util.Locale
 
 data class FormEntryState(
     val nik: String = "",
+    val nikErrMsg : String? = null,
+
     val namaLengkap: String = "",
+    val namaLengkapErrMsg : String? = null,
+
     val nomorHandphone: String = "",
+    val nomorHandphoneErrMsg : String? = null,
+
     val gender : Int = 0,
+
     val tanggalPendataan: Long = System.currentTimeMillis(),
+
     val alamat: String = "",
+    val alamatErrMsg : String? = null,
 
     val capturedPhoto : Uri? = null,
 

@@ -132,6 +132,7 @@ fun FormEntryScreen(
                 iconResId = R.drawable.ic_outline_badge_24,
                 value = state.nik,
                 onValueChange = viewModel::afterNikChanged,
+                errMsg = state.nikErrMsg,
                 keyboardType = KeyboardType.Number,
                 modifier = Modifier.fillMaxSize()
             )
@@ -141,6 +142,7 @@ fun FormEntryScreen(
                 iconResId = R.drawable.ic_outline_person_24,
                 value = state.namaLengkap,
                 onValueChange = viewModel::afterNamaLengkapChanged,
+                errMsg = state.namaLengkapErrMsg,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -149,7 +151,9 @@ fun FormEntryScreen(
                 iconResId = R.drawable.ic_baseline_phone_24,
                 value = state.nomorHandphone,
                 onValueChange = viewModel::afterNomorHandphoneChanged,
+                errMsg = state.nomorHandphoneErrMsg,
                 keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Done,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -292,6 +296,16 @@ fun FormEntryScreen(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done,
                 ),
+                isError = state.alamatErrMsg != null,
+                supportingText = {
+                    state.alamatErrMsg?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
             )
