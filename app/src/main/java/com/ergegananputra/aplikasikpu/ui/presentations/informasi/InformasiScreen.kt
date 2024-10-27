@@ -4,10 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,26 +29,18 @@ fun InformasiScreen(innerPadding: PaddingValues) {
                 .fillMaxSize()
                 .verticalScroll(verticalScroll)
         ) {
-            Text(
-                text = stringResource(R.string.deskripsi_kpu),
-                modifier = Modifier
-                    .padding(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    )
-            )
 
             Image(
                 painter = painterResource(R.drawable.logo_kpu_sample),
                 contentDescription = "Logo KPU",
                 modifier = Modifier
                     .aspectRatio(1f)
-                    .padding(32.dp)
-                    .sizeIn(minHeight = 150.dp)
+                    .padding(56.dp)
+                    .sizeIn(minHeight = 100.dp)
             )
 
             Text(
-                text = "Dibuat oleh Adiel Boanerge G. 2024.",
+                text = stringResource(R.string.deskripsi_kpu),
                 modifier = Modifier
                     .padding(
                         horizontal = 16.dp,
@@ -66,6 +56,7 @@ fun InformasiScreen(innerPadding: PaddingValues) {
                         vertical = 8.dp
                     )
             )
+
         }
     }
 }
