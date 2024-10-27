@@ -48,6 +48,9 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
     namespace = "com.ergegananputra.aplikasikpu"
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {

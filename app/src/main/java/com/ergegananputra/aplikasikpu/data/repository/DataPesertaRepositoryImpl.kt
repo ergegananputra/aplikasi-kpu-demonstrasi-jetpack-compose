@@ -5,6 +5,7 @@ import com.ergegananputra.aplikasikpu.data.database.AppDatabase
 import com.ergegananputra.aplikasikpu.data.remote.BackendApi
 import com.ergegananputra.aplikasikpu.domain.entities.remote.responses.GetPesertaResponse
 import com.ergegananputra.aplikasikpu.domain.entities.room.DataPeserta
+import com.ergegananputra.aplikasikpu.domain.repository.AuthRepository
 import com.ergegananputra.aplikasikpu.domain.repository.DataPesertaRepository
 import com.ergegananputra.aplikasikpu.utils.Result
 import com.ergegananputra.aplikasikpu.utils.toTimestamp
@@ -14,7 +15,6 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +26,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class DataPesertaRepositoryImpl(
     database: AppDatabase,
+    private val auth: AuthRepository,
     private val api: BackendApi
 ) : DataPesertaRepository {
     private val db =database.formDao()
@@ -64,13 +65,14 @@ class DataPesertaRepositoryImpl(
 
         val result = try {
             api.postPeserta(
-                    nik,
-                    namaLengkap,
-                    nomorHandphone,
-                    gender,
-                    tanggalPendataan,
-                    alamat,
-                    image
+                    key = auth.getUid() ?: "",
+                    nik = nik,
+                    namaLengkap = namaLengkap,
+                    nomorHandphone = nomorHandphone,
+                    gender = gender,
+                    tanggalPendataan = tanggalPendataan,
+                    alamat = alamat,
+                    image = image
                 ).execute()
         } catch (e: Exception) {
             Log.e("DataPesertaRepositoryImpl", "Error: ${e.message}")
@@ -85,8 +87,11 @@ class DataPesertaRepositoryImpl(
     }
 
     override suspend fun downloadDataPeserta() : Result {
+        val key = auth.getUid() ?: ""
         return suspendCoroutine { continuation ->
-            api.getPeserta().enqueue( object : Callback<GetPesertaResponse> {
+            api.getPeserta(
+                key = key
+            ).enqueue( object : Callback<GetPesertaResponse> {
                 override fun onResponse(
                     call: Call<GetPesertaResponse>,
                     response: Response<GetPesertaResponse>,

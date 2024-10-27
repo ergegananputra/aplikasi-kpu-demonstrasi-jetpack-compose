@@ -9,14 +9,18 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface BackendApi {
     @GET("peserta")
-    fun getPeserta() : Call<GetPesertaResponse>
+    fun getPeserta(
+        @Query("key") key: String
+    ) : Call<GetPesertaResponse>
 
     @Multipart
     @POST("peserta")
     fun postPeserta(
+        @Query("key") key: String,
         @Part("nik") nik: RequestBody,
         @Part("namaLengkap") namaLengkap: RequestBody,
         @Part("nomorHandphone") nomorHandphone: RequestBody,

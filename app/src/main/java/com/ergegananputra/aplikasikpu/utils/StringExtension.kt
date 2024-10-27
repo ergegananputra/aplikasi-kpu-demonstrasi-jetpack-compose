@@ -15,3 +15,8 @@ fun Long.toSimpleReadableString(): String {
     val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     return sdf.format(date)
 }
+
+fun String.trimmedNotEmptyOrNull(): String? {
+    val trimmed = this.trim()
+    return trimmed.ifEmpty { null }
+}
