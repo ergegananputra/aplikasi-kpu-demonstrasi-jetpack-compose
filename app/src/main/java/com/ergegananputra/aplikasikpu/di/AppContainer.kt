@@ -1,4 +1,4 @@
-package com.ergegananputra.aplikasikpu.domain
+package com.ergegananputra.aplikasikpu.di
 
 import android.content.Context
 import com.ergegananputra.aplikasikpu.domain.repository.DataPesertaRepository

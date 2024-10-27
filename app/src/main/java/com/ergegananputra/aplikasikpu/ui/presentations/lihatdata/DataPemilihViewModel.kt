@@ -3,7 +3,7 @@ package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ergegananputra.aplikasikpu.domain.AppContainer
+import com.ergegananputra.aplikasikpu.di.AppContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,10 +1,9 @@
-package com.ergegananputra.aplikasikpu.data
+package com.ergegananputra.aplikasikpu.di
 
 import android.content.Context
 import com.ergegananputra.aplikasikpu.data.database.AppDatabase
 import com.ergegananputra.aplikasikpu.data.remote.BackendApi
 import com.ergegananputra.aplikasikpu.data.repository.DataPesertaRepositoryImpl
-import com.ergegananputra.aplikasikpu.domain.AppContainer
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
