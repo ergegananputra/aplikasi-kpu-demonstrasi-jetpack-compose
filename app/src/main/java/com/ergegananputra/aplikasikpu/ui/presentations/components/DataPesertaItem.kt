@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,7 +26,8 @@ import com.ergegananputra.aplikasikpu.domain.entities.room.DataPeserta
 @Composable
 fun DataPesertaItem(
     dataPeserta: DataPeserta,
-    onClick : (id: Int) -> Unit
+    onClick : (id: Int) -> Unit,
+    onDeleteClick :  (id: Int) -> Unit,
 ) {
 
 
@@ -35,7 +39,8 @@ fun DataPesertaItem(
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Column(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -43,34 +48,49 @@ fun DataPesertaItem(
                     horizontal = 16.dp
                 )
         ) {
-
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(1f)
             ) {
-                Text(
-                    text = dataPeserta.namaLengkap ?: "Tidak ada nama lengkap",
-                    style = MaterialTheme.typography.titleLarge,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_outline_badge_24),
-                        contentDescription = "NIK",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                    )
                     Text(
-                        text = dataPeserta.nik ?: "Tidak ada nik",
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
+                        text = dataPeserta.namaLengkap ?: "Tidak ada nama lengkap",
+                        style = MaterialTheme.typography.titleLarge,
                         overflow = TextOverflow.Ellipsis
                     )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_outline_badge_24),
+                            contentDescription = "NIK",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                        )
+                        Text(
+                            text = dataPeserta.nik ?: "Tidak ada nik",
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
+            }
+
+            IconButton(
+                onClick = {
+                    onDeleteClick(dataPeserta.id) }
+            )  {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    tint = MaterialTheme.colorScheme.error,
+                    contentDescription = "Button to go back"
+                )
             }
         }
 

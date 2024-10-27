@@ -31,5 +31,21 @@ class DashboardViewModel : ViewModel() {
         }
     }
 
+    fun displayErrorMessage(message: String) {
+        _state.update {
+            it.copy(
+                errorMessage = message
+            )
+        }
+    }
+
+    fun clearErrorMessage() {
+        _state.update {
+            it.copy(
+                errorMessage = null
+            )
+        }
+    }
+
 
 }

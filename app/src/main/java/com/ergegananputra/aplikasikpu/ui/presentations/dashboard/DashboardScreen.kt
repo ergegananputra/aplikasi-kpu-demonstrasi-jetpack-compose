@@ -1,6 +1,7 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.dashboard
 
 import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +52,7 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
     mainEvent: (MainActivityEvent) -> Unit = {},
 ) {
+    val localContext = LocalContext.current
     val state by viewModel.state.collectAsState()
 
     if (state.isDialogOpen) {
@@ -58,6 +62,18 @@ fun DashboardScreen(
                 mainEvent(MainActivityEvent.LogOut)
             }
         )
+    }
+
+    LaunchedEffect(state.errorMessage) {
+        state.errorMessage?.let { errorMessage ->
+            Toast.makeText(
+                localContext,
+                errorMessage,
+                Toast.LENGTH_SHORT
+            ).show()
+
+            viewModel.clearErrorMessage()
+        }
     }
 
     Surface(

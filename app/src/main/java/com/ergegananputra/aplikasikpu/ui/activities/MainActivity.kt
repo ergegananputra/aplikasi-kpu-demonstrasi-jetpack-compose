@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.ergegananputra.aplikasikpu.ui.navigations.MainActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.dashboard.DashboardScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.dashboard.DashboardViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ergegananputra.aplikasikpu.KPUApplication
 import com.ergegananputra.aplikasikpu.utils.PackageManagerUtils
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -48,7 +51,8 @@ class MainActivity : ComponentActivity() {
     private fun onEvent(event: MainActivityEvent) {
         when (event) {
             MainActivityEvent.LogOut -> {
-                finish()
+                logoutAttempt()
+
             }
 
             MainActivityEvent.GoToFormEntry -> {
@@ -62,6 +66,23 @@ class MainActivity : ComponentActivity() {
             MainActivityEvent.GoToLihatData -> {
                 val intentToLihatDataActivity = Intent(this, DataPemilihActivity::class.java)
                 launcherToLihatData.launch(intentToLihatDataActivity)
+            }
+        }
+    }
+
+    private fun logoutAttempt() {
+        lifecycleScope.launch {
+            val appContainer = (application as KPUApplication).appContainer
+
+            val result = appContainer.authRepository.logout()
+
+            when (result) {
+                is com.ergegananputra.aplikasikpu.utils.Result.Error -> {
+                    dashboardViewModel.displayErrorMessage(result.exception.message ?: "Terjadi kesalahan dalam logout")
+                }
+                is com.ergegananputra.aplikasikpu.utils.Result.Success<*> -> {
+                    finish()
+                }
             }
         }
     }

@@ -5,6 +5,10 @@ import com.ergegananputra.aplikasikpu.domain.entities.room.DataPeserta
 data class DetailDataPemilihState(
     val id : Int,
     val data : DataPeserta? = null,
+
+    val isDone : Boolean = false,
+    val errorMessage : String? = null,
+    val isDeleteConfirmationOpen : Boolean = false
 ) {
     val gender : String
         get() = data?.gender.let {

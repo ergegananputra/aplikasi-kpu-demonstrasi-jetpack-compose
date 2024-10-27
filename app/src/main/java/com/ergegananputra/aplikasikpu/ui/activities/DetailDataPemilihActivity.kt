@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ergegananputra.aplikasikpu.KPUApplication
 import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
+import com.ergegananputra.aplikasikpu.ui.presentations.components.ConfirmationAlertDialog
 import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
@@ -47,7 +49,9 @@ class DetailDataPemilihActivity : ComponentActivity() {
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
             detailDataPemilihViewModel = viewModel {
-                DetailDataPemilihViewModel(appContainer = (application as KPUApplication).appContainer, id = detailId)
+                DetailDataPemilihViewModel(appContainer = (application as KPUApplication).appContainer, id = detailId).also {
+                    it.fetchDetailData(detailId)
+                }
             }
 
             AplikasiKPUTheme {
@@ -73,14 +77,24 @@ class DetailDataPemilihActivity : ComponentActivity() {
                                     )
                                 }
                             },
-                            scrollBehavior = scrollBehavior
+                            scrollBehavior = scrollBehavior,
+                            actions = {
+                                IconButton(onClick = { onEvent(DataPemilihActivityEvent.ShowDeleteConfirmation) }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Delete,
+                                        contentDescription = "Button to go back"
+                                    )
+                                }
+                            }
                         )
                     },
                     modifier = Modifier
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                 ) { innerPadding ->
+
                     DetailDataPemilihScreen(
+                        mainEvent = ::onEvent,
                         modifier = Modifier.padding(innerPadding),
                         viewModel = detailDataPemilihViewModel
                     )
@@ -94,6 +108,12 @@ class DetailDataPemilihActivity : ComponentActivity() {
             is DataPemilihActivityEvent.OnBack -> {
                 setResult(RESULT_OK)
                 finish()
+            }
+            is DataPemilihActivityEvent.ShowDeleteConfirmation -> {
+                detailDataPemilihViewModel.showDeleteConfirmation()
+            }
+            is DataPemilihActivityEvent.OnDelete -> {
+                detailDataPemilihViewModel.deleteData(event.id)
             }
             else -> {
                 // Do nothing

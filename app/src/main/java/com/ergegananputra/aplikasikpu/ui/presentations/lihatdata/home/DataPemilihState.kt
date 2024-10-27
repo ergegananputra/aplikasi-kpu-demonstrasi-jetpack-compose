@@ -7,5 +7,7 @@ data class DataPemilihState(
     val keyword : String = "",
 
     val isLoading: Boolean = false,
-    val errorMessage : String? = null
+    val errorMessage : String? = null,
+
+    val deleteId : Int? = null,
 )

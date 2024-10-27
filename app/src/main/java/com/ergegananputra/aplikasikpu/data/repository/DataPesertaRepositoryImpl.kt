@@ -54,12 +54,25 @@ class DataPesertaRepositoryImpl(
     }
 
     override suspend fun deleteDataPesertaById(id: Int) : Result {
-        try {
-            db.deleteDataPesertaById(id)
-            return Result.Success(Unit)
+
+        val result = try {
+            api.deletePeserta(
+                id = id,
+                key = auth.getUid() ?: "",
+            ).execute()
         } catch (e: Exception) {
+            Log.e("DataPesertaRepositoryImpl", "Error: ${e.message}")
             return Result.Error(e)
         }
+
+        when {
+            result.isSuccessful.not() -> {
+                return Result.Error(Exception("Delete data peserta failed"), "Gagal menghapus data peserta")
+            }
+        }
+
+        db.deleteDataPesertaById(id)
+        return Result.Success(Unit)
     }
 
     override suspend fun uploadDataPeserta(

@@ -77,4 +77,42 @@ class DataPemilihViewModel(
         }
     }
 
+    fun showDeletePeserta(id: Int) {
+        _state.update {
+            it.copy(
+                deleteId = id
+            )
+        }
+    }
+
+    fun hideDeleteConfirmation() {
+        _state.update {
+            it.copy(
+                deleteId = null
+            )
+        }
+    }
+
+    fun deleteDataPeserta(id: Int) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    appContainer.dataPesertaRepository.deleteDataPesertaById(id)
+                }
+            } catch (thr: Throwable) {
+                Log.e("DataPemilihViewModel", "deleteDataPeserta: $thr")
+                displayErrorMessage(thr.message ?: "Sistem tidak dapat menghapus data peserta")
+            } catch (e: Exception) {
+                Log.e("DataPemilihViewModel", "deleteDataPeserta: $e")
+                displayErrorMessage(e.message ?: "Sistem tidak dapat menghapus data peserta")
+            }
+
+            _state.update {
+                it.copy(
+                    deleteId = null
+                )
+            }
+        }
+    }
+
 }

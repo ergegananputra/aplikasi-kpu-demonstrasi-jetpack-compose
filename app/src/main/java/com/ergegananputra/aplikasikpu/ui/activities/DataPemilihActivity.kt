@@ -102,6 +102,12 @@ class DataPemilihActivity : ComponentActivity() {
                 intentToDetail.putExtra(DataPemilihActivityEvent.Keys.DETAIL_ID.name, event.id)
                 launcherToDetail.launch(intentToDetail)
             }
+
+            is DataPemilihActivityEvent.OnDelete -> TODO()
+
+            DataPemilihActivityEvent.ShowDeleteConfirmation -> {
+                TODO()
+            }
         }
     }
 

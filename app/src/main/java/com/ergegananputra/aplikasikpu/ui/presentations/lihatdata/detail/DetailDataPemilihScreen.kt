@@ -1,23 +1,26 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +35,10 @@ import coil3.compose.AsyncImage
 import com.ergegananputra.aplikasikpu.R
 import com.ergegananputra.aplikasikpu._dev.Mock.Companion.appContainer
 import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
-import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home.DataPemilihViewModel
+import com.ergegananputra.aplikasikpu.ui.presentations.components.ConfirmationAlertDialog
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 import com.ergegananputra.aplikasikpu.utils.toSimpleReadableString
+import kotlin.reflect.KFunction1
 
 @Preview(
     name = "Light Mode",
@@ -48,7 +52,7 @@ private fun DetailDataPemilihScreenDeveloperPreview() {
         id = 0
     )
     AplikasiKPUTheme {
-        DetailDataPemilihScreen(viewModel = viewModel)
+        DetailDataPemilihScreen(viewModel = viewModel, mainEvent = {})
     }
 }
 
@@ -56,9 +60,38 @@ private fun DetailDataPemilihScreenDeveloperPreview() {
 @Composable
 fun DetailDataPemilihScreen(
     viewModel: DetailDataPemilihViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mainEvent: (DataPemilihActivityEvent) -> Unit
 ) {
+    val localContext = androidx.compose.ui.platform.LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.isDone) {
+        if (state.isDone) {
+            mainEvent(DataPemilihActivityEvent.OnBack)
+        }
+    }
+
+    if (state.isDeleteConfirmationOpen) {
+        ConfirmationAlertDialog(
+            imagePainter = Icons.Filled.Delete,
+            title = "Hapus Data",
+            text = "Apakah Anda yakin ingin menghapus data ini?",
+            onDismissRequest = { viewModel.hideDeleteConfirmation() },
+            onConfirmation = { viewModel.deleteData(state.id) }
+        )
+    }
+
+    state.errorMessage?.let {
+        Toast.makeText(
+            localContext,
+            it,
+            Toast.LENGTH_SHORT
+        ).show()
+
+        viewModel.clearErrorMessage()
+    }
+
 
     val scrollY = rememberScrollState()
 

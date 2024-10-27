@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -29,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ergegananputra.aplikasikpu.R
 import com.ergegananputra.aplikasikpu._dev.Mock.Companion.appContainer
 import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
+import com.ergegananputra.aplikasikpu.ui.presentations.components.ConfirmationAlertDialog
 import com.ergegananputra.aplikasikpu.ui.presentations.components.DataPesertaItem
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 
@@ -62,6 +65,17 @@ fun DataPemilihScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
+
+        state.deleteId?.let {
+            ConfirmationAlertDialog(
+                imagePainter = Icons.Filled.Delete,
+                title = "Hapus Data",
+                text = "Apakah Anda yakin ingin menghapus data ini?",
+                onDismissRequest = { viewModel.hideDeleteConfirmation() },
+                onConfirmation = { viewModel.deleteDataPeserta(it) }
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -135,6 +149,9 @@ fun DataPemilihScreen(
                         dataPeserta = dataPeserta,
                         onClick = {
                             mainEvent(DataPemilihActivityEvent.OnDetail(it))
+                        },
+                        onDeleteClick = {
+                            viewModel.showDeletePeserta(it)
                         }
                     )
                 }
