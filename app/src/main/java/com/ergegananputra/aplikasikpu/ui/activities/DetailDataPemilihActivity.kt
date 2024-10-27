@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ergegananputra.aplikasikpu.KPUApplication
 import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
-import com.ergegananputra.aplikasikpu.ui.presentations.components.ConfirmationAlertDialog
 import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihScreen
 import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme

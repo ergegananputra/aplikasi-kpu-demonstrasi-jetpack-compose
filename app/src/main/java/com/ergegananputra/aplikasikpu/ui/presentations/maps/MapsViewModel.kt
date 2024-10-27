@@ -1,7 +1,6 @@
 package com.ergegananputra.aplikasikpu.ui.presentations.maps
 
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.ViewModel

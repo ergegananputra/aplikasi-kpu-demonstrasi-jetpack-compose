@@ -38,7 +38,6 @@ import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.components.ConfirmationAlertDialog
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 import com.ergegananputra.aplikasikpu.utils.toSimpleReadableString
-import kotlin.reflect.KFunction1
 
 @Preview(
     name = "Light Mode",
