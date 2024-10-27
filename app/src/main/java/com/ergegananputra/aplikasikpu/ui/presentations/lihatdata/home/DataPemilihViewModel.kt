@@ -1,4 +1,4 @@
-package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata
+package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -69,7 +69,7 @@ class DataPemilihViewModel(
     }
 
 
-    private fun displayErrorMessage(errorMessage: String) {
+    fun displayErrorMessage(errorMessage: String) {
         _state.update {
             it.copy(
                 errorMessage = errorMessage

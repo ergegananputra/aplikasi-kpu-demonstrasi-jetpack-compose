@@ -49,6 +49,19 @@ class DataPesertaRepositoryImpl(
         return db.getDataPesertaFiltered(keyword)
     }
 
+    override fun getDataPesertaById(id: Int) : Flow<DataPeserta> {
+        return db.getDataPesertaById(id)
+    }
+
+    override suspend fun deleteDataPesertaById(id: Int) : Result {
+        try {
+            db.deleteDataPesertaById(id)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Error(e)
+        }
+    }
+
     override suspend fun uploadDataPeserta(
         dataPeserta: DataPeserta,
         imageFile: File

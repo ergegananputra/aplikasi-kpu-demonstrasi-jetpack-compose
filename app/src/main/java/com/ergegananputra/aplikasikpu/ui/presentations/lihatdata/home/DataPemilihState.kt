@@ -1,4 +1,4 @@
-package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata
+package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home
 
 import com.ergegananputra.aplikasikpu.domain.entities.room.DataPeserta
 

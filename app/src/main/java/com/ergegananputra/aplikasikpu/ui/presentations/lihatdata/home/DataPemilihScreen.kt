@@ -1,6 +1,5 @@
-package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata
+package com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ergegananputra.aplikasikpu.R
-import com.ergegananputra.aplikasikpu.di.AppContainer
-import com.ergegananputra.aplikasikpu.domain.repository.DataPesertaRepository
+import com.ergegananputra.aplikasikpu._dev.Mock.Companion.appContainer
+import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
 import com.ergegananputra.aplikasikpu.ui.presentations.components.DataPesertaItem
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 
@@ -41,12 +40,7 @@ import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 @Composable
 private fun DataPemilihScreenDeveloperPreview() {
     val viewModel = DataPemilihViewModel(
-        appContainer = object : AppContainer {
-            override val dataPesertaRepository: DataPesertaRepository
-                get() = TODO("Not yet implemented")
-            override val context: Context
-                get() = TODO("Not yet implemented")
-        }
+        appContainer = appContainer
     )
     AplikasiKPUTheme {
         DataPemilihScreen(viewModel = viewModel)
@@ -57,7 +51,8 @@ private fun DataPemilihScreenDeveloperPreview() {
 @Composable
 fun DataPemilihScreen(
     viewModel: DataPemilihViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mainEvent : (DataPemilihActivityEvent) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
@@ -136,7 +131,12 @@ fun DataPemilihScreen(
                     items = state.dataPesertaList,
                     key = { it.id }
                 ) {dataPeserta ->
-                    DataPesertaItem(dataPeserta)
+                    DataPesertaItem(
+                        dataPeserta = dataPeserta,
+                        onClick = {
+                            mainEvent(DataPemilihActivityEvent.OnDetail(it))
+                        }
+                    )
                 }
 
                 item { Spacer(modifier = Modifier.size(32.dp)) }

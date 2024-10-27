@@ -1,12 +1,9 @@
 package com.ergegananputra.aplikasikpu.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,34 +17,37 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ergegananputra.aplikasikpu.KPUApplication
 import com.ergegananputra.aplikasikpu.ui.navigations.DataPemilihActivityEvent
-import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home.DataPemilihScreen
-import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.home.DataPemilihViewModel
+import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihScreen
+import com.ergegananputra.aplikasikpu.ui.presentations.lihatdata.detail.DetailDataPemilihViewModel
 import com.ergegananputra.aplikasikpu.ui.theme.AplikasiKPUTheme
 
-class DataPemilihActivity : ComponentActivity() {
+class DetailDataPemilihActivity : ComponentActivity() {
 
-    private lateinit var dataPesertaViewModel: DataPemilihViewModel
+    private lateinit var detailDataPemilihViewModel: DetailDataPemilihViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
+        val detailId = intent.getIntExtra(DataPemilihActivityEvent.Keys.DETAIL_ID.name, -1)
+
+        if (detailId == -1) {
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+
+        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-            dataPesertaViewModel = viewModel {
-                DataPemilihViewModel(appContainer = (application as KPUApplication).appContainer)
-            }
 
-            LaunchedEffect(key1 = dataPesertaViewModel) {
-                dataPesertaViewModel.fetchDataPeserta()
+            detailDataPemilihViewModel = viewModel {
+                DetailDataPemilihViewModel(appContainer = (application as KPUApplication).appContainer, id = detailId)
             }
 
             AplikasiKPUTheme {
@@ -80,10 +80,9 @@ class DataPemilihActivity : ComponentActivity() {
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                 ) { innerPadding ->
-                    DataPemilihScreen(
-                        mainEvent = ::onEvent,
-                        viewModel = dataPesertaViewModel,
-                        modifier = Modifier.padding(innerPadding)
+                    DetailDataPemilihScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = detailDataPemilihViewModel
                     )
                 }
             }
@@ -92,27 +91,15 @@ class DataPemilihActivity : ComponentActivity() {
 
     private fun onEvent(event: DataPemilihActivityEvent) {
         when (event) {
-            DataPemilihActivityEvent.OnBack -> {
-                setResult(RESULT_CANCELED)
+            is DataPemilihActivityEvent.OnBack -> {
+                setResult(RESULT_OK)
                 finish()
             }
-
-            is DataPemilihActivityEvent.OnDetail -> {
-                val intentToDetail = Intent(this, DetailDataPemilihActivity::class.java)
-                intentToDetail.putExtra(DataPemilihActivityEvent.Keys.DETAIL_ID.name, event.id)
-                launcherToDetail.launch(intentToDetail)
+            else -> {
+                // Do nothing
             }
         }
     }
 
-    private val launcherToDetail = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            Log.d("DataPemilihActivity", "launcherToDetail - Success")
-        } else if (result.resultCode == RESULT_CANCELED) {
-            Log.d("DataPemilihActivity", "launcherToDetail - Cancelled")
-            dataPesertaViewModel.displayErrorMessage("Gagal membuka detail data pemilih")
-        } else {
-            Log.d("DataPemilihActivity", "launcherToDetail - Unknown")
-        }
-    }
+
 }

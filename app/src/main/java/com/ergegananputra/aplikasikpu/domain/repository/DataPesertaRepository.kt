@@ -11,6 +11,9 @@ interface DataPesertaRepository {
     fun getDataPeserta() : Flow<List<DataPeserta>>
     fun getDataPesertaFiltered(keyword: String) : Flow<List<DataPeserta>>
 
+    fun getDataPesertaById(id: Int) : Flow<DataPeserta>
+    suspend fun deleteDataPesertaById(id: Int) : Result
+
     suspend fun uploadDataPeserta(dataPeserta: DataPeserta, imageFile: File) : Result
     suspend fun downloadDataPeserta() : Result
 }

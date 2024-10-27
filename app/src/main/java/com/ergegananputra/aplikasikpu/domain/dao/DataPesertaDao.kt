@@ -21,6 +21,12 @@ interface DataPesertaDao {
     @Query("SELECT * FROM data_peserta WHERE nik LIKE '%' || :keyword || '%' OR namaLengkap LIKE '%' || :keyword || '%'")
     fun getDataPesertaFiltered(keyword: String): Flow<List<DataPeserta>>
 
+    @Query("SELECT * FROM data_peserta WHERE id = :id")
+    fun getDataPesertaById(id: Int): Flow<DataPeserta>
+
+    @Query("DELETE FROM data_peserta WHERE id = :id")
+    suspend fun deleteDataPesertaById(id: Int)
+
     @Query("DELETE FROM data_peserta")
     suspend fun deleteAll()
 }
